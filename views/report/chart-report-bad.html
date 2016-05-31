@@ -1,0 +1,104 @@
+{% extends '../layout.html' %} 
+
+{% block title %}错误监控报表平台{% endblock %} 
+
+{% block content %}
+<div class="admin-content-body">
+    <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf">
+            <strong class="am-text-primary am-text-lg"><a href="/list-report.html">返回</a></strong> / <small>《{{ info.name }}》上报详细信息</small>
+        </div>
+        <table class="am-table am-table-striped am-table-hover table-main">
+            <thead>
+                <tr>
+                    <th class="table-id">ID</th>
+                    <th class="table-title">上报名称</th>
+                    <th class="table-url">url或uri</th>
+                    <th class="table-from">上报来源</th>
+                    <th class="table-type">上报类型</th>
+                    <th class="table-domain">域名限制</th>
+                    <th class="table-version">版本号</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr title="{{ info.desc}}">
+                    <td>{{ info.id }}</td>
+                    <td>{{ info.name }}</td>
+                    <td>{{ info.uri }}</td>
+                    <td>{{ info.from }}</td>
+                    <td>{{ info.type }}</td>
+                    <td>{{ info.domain }}</td>
+                    <td>{{ info.version }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div class="am-g">
+        <div class="am-u-sm-12">
+
+            <div id="reportChart" style="width: 100%;height:500px;"></div>
+        </div>
+    </div>
+</div>
+<div id="dataStore" data-date="{{ dateArr }}" data-data="{{ dataArr }}"></div>
+{% endblock %}
+
+{% block script %}
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/amazeui//js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/amazeui/js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="/amazeui/js/amazeui.min.js"></script>
+<script src="/amazeui/js/app.js"></script>
+<script src="/common/echart.js"></script>
+
+<script>
+var dateArr = $('#dataStore').data('date').split(',');
+var dataArr = $('#dataStore').data('data').split(',');
+var myChart = echarts.init(document.getElementById('reportChart'));
+var option = {
+    title: {
+        text: '折线图堆叠'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    grid: {
+        top: '2%',
+        left: '4%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: true,
+        data: dateArr
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [
+        {
+            name:'错误监控',
+            type:'line',
+            stack: '总量',
+            data: dataArr
+        }
+    ]
+};
+
+myChart.setOption(option);
+
+</script>
+{% endblock %}

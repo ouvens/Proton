@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="utf-8">
+    <title>用户注册</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="质量监控数据平台">
+    <meta name="keywords" content="质量监控数据平台">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta name="apple-mobile-web-app-title" content="质量监控数据平台" />
+
+    <link rel="stylesheet" href="/amazeui/css/amazeui.min.css" />
+    <style>
+    .header {
+        text-align: center;
+    }
+    
+    .header h1 {
+        font-size: 200%;
+        color: #333;
+        margin-top: 30px;
+    }
+    
+    .header p {
+        font-size: 14px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="am-g">
+            <h1>错误质量监控中心</h1>
+            <p>web,app,server,数据统
+              <br/>代码编辑，代码生成，界面设计，调试，编译</p>
+        </div>
+        <hr />
+    </div>
+    <div class="am-g">
+        <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+            <h3>用户注册</h3>
+            <hr>
+            <form class="am-form" id='amForm'>
+                <label for="email">用户名:</label>
+                <input type="email" name="email" id="email" value="">
+                <br>
+                <label for="password">密码:</label>
+                <input type="password" name="password" id="password" value="">
+                <br>
+                <label for="password">重复密码:</label>
+                <input type="password" name="password-check" id="password" value="">
+                <br />
+                <div class="am-cf">
+                    <input type="button" name="" value="注    册" class="am-btn am-btn-primary am-btn-sm am-fl btn-register">
+                    <input type="button" name="" value="返回登录" class="am-btn am-btn-default am-btn-sm am-fr btn-login">
+                </div>
+            </form>
+            <hr>
+            <p class="am-padding-left">© 内部质量监控平台</p>
+        </div>
+    </div>
+
+    <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+
+    $('#amForm').on('click','.btn-register', function(data){
+        $.ajax({
+            url: '/v1/register',
+            method: 'post',
+            data: {
+                username: $('#amForm').find('#email').val(),
+                pwd: $('#amForm').find('#password').val()
+            },
+            dataType: 'json',
+            success: function(data){
+                if (data.code === 200) {
+                    window.location.href = '/add-report.html';
+                }else{
+                    alert(data.msg);
+                }
+            }
+        });
+    }).on('click','.btn-login', function(e) {
+        window.location.href= '/login.html';
+    });
+
+    </script>
+</body>
+</html>

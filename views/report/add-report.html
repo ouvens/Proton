@@ -1,0 +1,128 @@
+{% extends '../layout.html' %} 
+
+{% block title %}添加检测页面项目{% endblock %} 
+
+{% block content %}
+<div class="admin-content-body">
+    <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf">
+            <strong class="am-text-primary am-text-lg">申请项目</strong> /
+            <small>注册上报页面</small>
+        </div>
+    </div>
+    <hr>
+    <div class="am-g">
+        <div class="am-u-lg-12 am-u-md-12 am-u-sm-centered">
+
+            <form class="am-form" id="amForm" name="amForm">
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">
+                        上报名称
+                    </div>
+                    <div class="am-u-sm-8 am-u-md-4">
+                        <input type="text" class="am-input-sm" name='name'>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-6">*必填，例如：活动详情页</div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">
+                        url或uri
+                    </div>
+                    <div class="am-u-sm-8 am-u-md-4 am-u-end col-end">
+                        <input type="text" class="am-input-sm" name="uri">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-6">*必填，例如：http://test.domain.com/index.html或package util.show.mainActivity</div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">上报来源</div>
+                    <div class="am-u-sm-8 am-u-md-10">
+                        <select data-am-selected="{btnSize: 'sm'}" name="from">
+                            <option value="web">web或H5页面</option>
+                            <option value="android">Android APP</option>
+                            <option value="ios">IOS APP</option>
+                            <option value="server">服务端</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">上报类型</div>
+                    <div class="am-u-sm-8 am-u-md-10">
+                        <select data-am-selected="{btnSize: 'sm'}" name="type">
+                            <option value="bad">错误日志上报</option>
+                            <option value="speed">测速上报</option>
+                            <option value="statis">数据统计上报</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">
+                        域名限制
+                    </div>
+                    <div class="am-u-sm-8 am-u-md-4">
+                        <input type="text" class="am-input-sm" name="domain">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-6">*必填，用户限制域名上报权限，否则上报不成功，例如：test.domain.com</div>
+                </div>
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">
+                        版本号
+                    </div>
+                    <div class="am-u-sm-8 am-u-md-4 am-u-end col-end">
+                        <input type="text" class="am-input-sm" name="version">
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-6">选填，推荐日期命名方式，例如：0.16.0524</div>
+                </div>
+                <div class="am-g am-margin-top-sm">
+                    <div class="am-u-sm-4 am-u-md-2 am-text-right">
+                        其它描述
+                    </div>
+                    <div class="am-u-sm-8 am-u-md-4 am-u-end">
+                        <textarea rows="4" style="margin-top: 0px; margin-bottom: 0px; height: 100px;" name="desc"></textarea>
+                    </div>
+                    <div class="am-hide-sm-only am-u-md-6">选填，一些其它需要注意的事项</div>
+                </div>
+                <div class="am-margin am-u-sm-centered">
+                  <button type="button" class="am-btn am-btn-primary am-btn-xs btn-save">提交保存</button>
+                  <button type="button" class="am-btn am-btn-primary am-btn-xs btn-report">上报管理</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/amazeui//js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/amazeui/js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="/amazeui/js/amazeui.min.js"></script>
+<script src="/amazeui/js/app.js"></script>
+<script>
+    var form = document.amForm;
+    $('#amForm').on('click','.btn-save', function(e) {
+        $.ajax({
+            url: '/v1/project',
+            method: 'post',
+            data:{
+                name: form.name.value,
+                uri: form.uri.value,
+                from: form.from.value,
+                type: form.type.value,
+                domain: form.domain.value,
+                desc: form.desc.value,
+                version: form.version.value
+            },
+            success: function(data) {
+                console.log(data);
+            }
+        })
+    }).on('click','.btn-report',function(e) {
+        location.href = '/list-report.html';
+    })
+</script>
+{% endblock %}

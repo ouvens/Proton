@@ -1,0 +1,29 @@
+
+
+html,body{
+	min-width: 960px;
+}
+
+.am-topbar-brand:hover{
+	cursor: pointer;
+}
+
+.am-table th{
+	white-space: nowrap;
+}
+
+.am-table td{
+	min-width: 100px;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.am-table td.td-msg{
+	min-width: 200px;
+	max-width: 250px;
+}
+
+.am-list.admin-sidebar-list{
+	height: 100%;
+}
