@@ -18,7 +18,7 @@ const userDb = require('../models/user');
 const projectDb = require('../models/project');
 
 /**
- * 上报规范：
+ * web错误上报规范接口
  * @yield {[type]} [description]
  */
 const report = function*() {
@@ -95,7 +95,7 @@ const report = function*() {
 };
 
 /**
- * 添加关联的设备信息
+ * 用户添加关联的设备信息
  * @yield {[type]} [description]
  */
 const addDevice = function*(req, res) {
@@ -123,6 +123,12 @@ const addDevice = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 用户注册接口
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const register = function*(req, res) {
 
     let ctx = this;
@@ -192,6 +198,12 @@ const register = function*(req, res) {
     ctx.body = res;
 };
 
+/**
+ * 用户注销接口
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const logout = function*(req, res) {
 
     let ctx = this;
@@ -208,6 +220,12 @@ const logout = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 用户登录接口
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const auth = function*(req, res) {
 
     let ctx = this;
@@ -238,9 +256,10 @@ const auth = function*(req, res) {
             pwd: pwdToken
         });
 
+        /**
+         * 如果找到记录则将信息加入cookie
+         */
         if (result) {
-
-            console.log(result.userid);
             ctx.cookies.set('token', pwdToken);
             ctx.cookies.set('uin', result.userid);
 
@@ -260,7 +279,7 @@ const auth = function*(req, res) {
 };
 
 /**
- * 添加上报接口
+ * 添加上报项目
  * @param {[type]} req           [description]
  * @param {[type]} res           [description]
  * @yield {[type]} [description]
@@ -271,8 +290,6 @@ const addProject = function*(req, res) {
     let data = ctx.request.body;
     let token;
     let csrf = ctx.request.body['csrf'];
-
-    console.log(csrf, ctx.session.csrf);
 
     if (csrf !== ctx.session.csrf) {
         res = {
@@ -331,6 +348,12 @@ const addProject = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 删除整个上报项目并且清空该项目下的所有上报记录
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const delProject = function*(req, res) {
 
     let ctx = this;
@@ -356,6 +379,12 @@ const delProject = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 清空整个项目的上报记录
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const delReport = function*(req, res) {
 
     let ctx = this;
@@ -378,6 +407,12 @@ const delReport = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 删除指定的一条上报记录
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const delOneReport = function*(req, res) {
 
     let ctx = this;
@@ -401,6 +436,12 @@ const delOneReport = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 用户对错误信息添加关注，方便下次快速查看
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const addAttention = function*(req, res) {
 
     let ctx = this;
@@ -469,7 +510,6 @@ const cancelAttention = function*(req, res) {
             userid: uin
         });
 
-        // 如果在关注列表中则移除后更新
         if (util.array.inArray(reportid, result.collect)) {
 
             result.collect = util.array.removeFromArray(reportid, result.collect);
@@ -498,8 +538,10 @@ const cancelAttention = function*(req, res) {
     ctx.body = res;
 }
 
+/**
+ * 运行临时测试脚本
+ */
 const test = function*(req, res) {
-
     // var result = yield reportDb.remove();
     // var record = yield reportDb.find({});
     // var result = yield projectDb.remove();

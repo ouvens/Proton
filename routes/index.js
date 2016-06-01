@@ -14,9 +14,9 @@ const router = require('koa-router')();
 /**
  * 页面路由设置
  */
-router.get('/index.html', page.index);
 router.get('/mobile.html', page.mobile);
 
+router.get('/index.html', report.addReport);
 router.get('/login.html', user.login)
 router.get('/register.html', user.register);
 router.get('/add-report.html', report.addReport);

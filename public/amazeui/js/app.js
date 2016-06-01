@@ -29,6 +29,17 @@
         })
     }).on('click', '.am-topbar-brand', function(e) {
         window.location.href = '/list-report.html';
-    })
+    });
+
+    var path = location.href;
+    var router;
+    $('.admin-sidebar-list li').each(function(el) {
+        router = $(this).find('> a').attr('href');
+        console.log(router, path);
+        if (router && path.indexOf(router) >= 0) {
+            $(this).addClass('active')
+        }
+    });
+
 
 })(jQuery);
