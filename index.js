@@ -8,7 +8,8 @@ const serve = require('koa-static');
 const stylus = require('koa-stylus');
 const koaBody = require('koa-body');
 
-const session = require('koa-session-redis3');
+const session = require('koa-session-store');
+const mongoStore = require('koa-session-mongo');
 
 const router = require('./routes');
 
@@ -21,32 +22,19 @@ app.use(logger());
 //设置静态目录内容
 app.use(serve('./views')).use(serve('./mock')).use(serve('./public'));
 
-app.keys = ['xiaodao360'];
+app.keys = ['sessionid'];
+
+
 app.use(session({
-	store: {
-		host: process.env.SESSION_PORT_6379_TCP_ADDR || '127.0.0.1',
-		port: process.env.SESSION_PORT_6379_TCP_PORT || 6379,
-		ttl: 3600,
-		keySchema: 'your:schema',
-		key: 'XD:session'
-	}
+	store: mongoStore.create({
+		db: 'session_token'
+	})
 }));
 
 
 app.on('error', function(err, ctx) {
 	log.error('server error', err, ctx);
 });
-
-// 路由中间件
-router.use(session({
-	store: {
-		host: process.env.SESSION_PORT_6379_TCP_ADDR || '127.0.0.1',
-		port: process.env.SESSION_PORT_6379_TCP_PORT || 6379,
-		ttl: 3600,
-		keySchema: 'your:schema',
-		key: 'XD:session'
-	}
-}));
 
 app.use(koaBody({
 	formidable: {

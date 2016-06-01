@@ -29,6 +29,7 @@ router.get('/list-report.html', report.listReport);
 router.get('/list-report-bad.html', report.listReportBad);
 router.get('/count-report-bad.html', report.countReportBad);
 router.get('/chart-report-bad.html', report.chartReportBad);
+router.get('/my-report-bad.html', report.myReportBad);
 
 /**
  * api路由设置
@@ -40,6 +41,14 @@ router.post('/v1/register', api.register);
 router.post('/v1/auth', api.auth);
 router.post('/v1/logout', api.logout);
 router.post('/v1/project', api.addProject);
+
+router.post('/v1/attention', api.addAttention);
+
+router.delete('/v1/attention/:reportid/:csrf', api.cancelAttention);
+router.delete('/v1/project/:id/:csrf', api.delProject);
+router.delete('/v1/report/:id/:csrf', api.delReport);
+
+router.delete('/v1/one/report/:reportid/:csrf', api.delOneReport);
 
 router.get('/v1/test', api.test);
 

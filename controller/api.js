@@ -5,7 +5,6 @@
  */
 
 const coRequest = require("co-request");
-const session = require('koa-session-redis3');
 const util = require('../lib/util');
 const md5 = require('../lib/md5');
 
@@ -132,10 +131,14 @@ const register = function*(req, res) {
     let username = ctx.request.body['username'];
     let pwd = ctx.request.body['pwd'];
 
-    /**
-     * 确保用户名和密码输入
-     */
-    if (!username || !pwd) {
+    let csrf = ctx.request.body['csrf'];
+
+    if (csrf !== ctx.session.csrf) {
+        res = {
+            code: 400,
+            msg: '不明网站来源提交'
+        }
+    } else if (!username || !pwd) {
         res = {
             code: 401,
             msg: '用户或密码不能为空'
@@ -200,10 +203,7 @@ const logout = function*(req, res) {
     ctx.cookies.set('uin', null);
 
     res = {
-        code: 200,
-        result: {
-
-        }
+        code: 200
     };
     ctx.body = res;
 }
@@ -215,11 +215,14 @@ const auth = function*(req, res) {
 
     let username = ctx.request.body['username'];
     let pwd = ctx.request.body['pwd'];
+    let csrf = ctx.request.body['csrf'];
 
-    /**
-     * 确保用户名和密码输入
-     */
-    if (!username || !pwd) {
+    if (csrf !== ctx.session.csrf) {
+        res = {
+            code: 400,
+            msg: '不明网站来源提交'
+        }
+    } else if (!username || !pwd) {
         res = {
             code: 401,
             msg: '用户或密码不能为空'
@@ -256,13 +259,27 @@ const auth = function*(req, res) {
     ctx.body = res;
 };
 
+/**
+ * 添加上报接口
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
 const addProject = function*(req, res) {
 
     let ctx = this;
     let data = ctx.request.body;
     let token;
+    let csrf = ctx.request.body['csrf'];
 
-    if (!data.name || !data.uri) {
+    console.log(csrf, ctx.session.csrf);
+
+    if (csrf !== ctx.session.csrf) {
+        res = {
+            code: 400,
+            msg: '不明网站来源提交'
+        }
+    } else if (!data.name || !data.uri) {
         ctx.body = {
             code: 401,
             msg: '缺少必要参数'
@@ -275,6 +292,7 @@ const addProject = function*(req, res) {
      * @type {[type]}
      */
     token = md5(data.name).slice(0, 10) + '-' + md5(data.name + data.uri).slice(11, -10) + '-' + md5(data.uri).slice(-10);
+
 
     let projectResult = yield projectDb.find({
         token: token
@@ -292,6 +310,7 @@ const addProject = function*(req, res) {
     data['userid'] = ctx.cookies.get('uin');
     data['id'] = (+new Date()).toString().slice(-8);
     data['time'] = util.time.format('yy-mm-dd hh:ii:ss', +new Date());
+    delete data['csrf'];
 
     ctx.body = ctx.request.body;
 
@@ -312,14 +331,183 @@ const addProject = function*(req, res) {
     ctx.body = res;
 }
 
+const delProject = function*(req, res) {
+
+    let ctx = this;
+    let result;
+
+    // 如果id不为空，请csrf检验成功
+    if (ctx.params.id && ctx.params.csrf === ctx.session.csrf) {
+        result = yield reportDb.remove({
+            id: ctx.params.id
+        });
+        result = yield projectDb.remove({
+            id: ctx.params.id
+        })
+        res = {
+            code: 200
+        };
+    } else {
+        res = {
+            code: 500,
+            msg: '服务器错误'
+        }
+    }
+    ctx.body = res;
+}
+
+const delReport = function*(req, res) {
+
+    let ctx = this;
+    let result;
+
+    // 如果id不为空，请csrf检验成功
+    if (ctx.params.id && ctx.params.csrf === ctx.session.csrf) {
+        result = yield reportDb.remove({
+            id: ctx.params.id
+        });
+        res = {
+            code: 200
+        };
+    } else {
+        res = {
+            code: 500,
+            msg: '服务器错误'
+        }
+    }
+    ctx.body = res;
+}
+
+const delOneReport = function*(req, res) {
+
+    let ctx = this;
+    let result;
+
+    // 如果id不为空，请csrf检验成功
+    if (ctx.params.reportid && ctx.params.csrf === ctx.session.csrf) {
+        result = yield reportDb.remove({
+            reportid: ctx.params.reportid
+        });
+        res = {
+            code: 200,
+            result: result
+        };
+    } else {
+        res = {
+            code: 400,
+            msg: '请求被拒绝'
+        }
+    }
+    ctx.body = res;
+}
+
+const addAttention = function*(req, res) {
+
+    let ctx = this;
+    let uin = ctx.cookies.get('uin');
+    let reportid = ctx.request.body['reportid'];
+
+    let csrf = ctx.request.body['csrf'];
+
+    let result;
+
+    // 如果id不为空，请csrf检验成功
+    if (reportid && csrf === ctx.session.csrf) {
+
+        result = yield userDb.findOne({
+            userid: uin
+        });
+
+        if (!util.array.inArray(reportid, result.collect)) {
+
+            result.collect.push(reportid);
+
+            result = yield userDb.update({
+                userid: uin
+            }, result);
+
+            res = {
+                code: 200,
+                result: result
+            }
+        } else {
+            res = {
+                code: 500,
+                msg: '您已经关注'
+            }
+        }
+    } else {
+        res = {
+            code: 400,
+            msg: '请求被拒绝'
+        }
+    }
+    ctx.body = res;
+}
+
+
+/**
+ * 用户取消关注信息
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
+const cancelAttention = function*(req, res) {
+
+    let ctx = this;
+    let uin = ctx.cookies.get('uin');
+    let reportid = ctx.params.reportid;
+
+    let csrf = ctx.params.csrf;
+
+    let result;
+
+    // 如果id不为空，请csrf检验成功
+    if (reportid && csrf === ctx.session.csrf) {
+
+        result = yield userDb.findOne({
+            userid: uin
+        });
+
+        // 如果在关注列表中则移除后更新
+        if (util.array.inArray(reportid, result.collect)) {
+
+            result.collect = util.array.removeFromArray(reportid, result.collect);
+
+            result = yield userDb.update({
+                userid: uin
+            }, result);
+
+            res = {
+                code: 200,
+                result: result
+            }
+        } else {
+            res = {
+                code: 500,
+                msg: '您已经关注'
+            }
+        }
+
+    } else {
+        res = {
+            code: 400,
+            msg: '请求被拒绝'
+        }
+    }
+    ctx.body = res;
+}
+
 const test = function*(req, res) {
 
-    var result = yield reportDb.remove();
-    var record = yield reportDb.find({});
-    var result = yield projectDb.remove();
-    var record = yield projectDb.find({});
-    var result = yield userDb.remove();
-    var record = yield userDb.find({});
+    // var result = yield reportDb.remove();
+    // var record = yield reportDb.find({});
+    // var result = yield projectDb.remove();
+    // var record = yield projectDb.find({});
+    // var result = yield userDb.remove();
+    // var record = yield userDb.find({});
+
+    let record = yield userDb.find({});
 
     this.body = record;
 }
@@ -331,5 +519,10 @@ module.exports = {
     logout: logout,
     addProject: addProject,
     addDevice: addDevice,
+    delProject: delProject,
+    delReport: delReport,
+    delOneReport: delOneReport,
+    addAttention: addAttention,
+    cancelAttention: cancelAttention,
     test: test
 }

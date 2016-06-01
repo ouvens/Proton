@@ -33,14 +33,12 @@
     <div class="header">
         <div class="am-g">
             <h1>错误质量监控中心</h1>
-            <p>web,app,server,数据统
-              <br/>代码编辑，代码生成，界面设计，调试，编译</p>
         </div>
         <hr />
     </div>
     <div class="am-g">
         <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-            <h3>用户登录</h3>
+            <h2>用户登录</h2>
             <hr>
             <form method="post" class="am-form" id="amForm">
                 <label for="email">用户名:</label>
@@ -59,29 +57,70 @@
             <p class="am-padding-left">© 内部质量监控平台</p>
         </div>
     </div>
-
+    <div id="dataStore" data-csrf="{{ csrf }}"></div>
+    
     <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
     <script>
-    $('#amForm').on('click','.btn-login', function(data){
-        $.ajax({
-            url: '/v1/auth',
-            method: 'post',
-            data: {
-                username: $('#amForm').find('#email').val(),
-                pwd: $('#amForm').find('#password').val()
+    (function($) {
+
+        var $amForm = $('#amForm'),
+            data;
+        // 获取用户名和密码，不能先获取
+        var getUsername = function() {
+                return $amForm.find('#email').val();
             },
-            dataType: 'json',
-            success: function(data){
-                if (data.code === 200) {
-                    window.location.href = '/add-report.html';
-                }else{
-                    alert(data.msg);
-                }
+            getPwd = function() {
+                return $amForm.find('#password').val();
+            },
+            csrf = $('#dataStore').data('csrf');
+
+        $amForm.on('click','.btn-login', function(e){
+            data = {
+                username: getUsername(),
+                pwd: getPwd(),
+                csrf:  csrf
             }
+            _submit(data);
+
+        }).on('keydown','input[name=password]', function(e) {
+            if(e.keyCode === 13){
+                data = {
+                    username: getUsername(),
+                    pwd: getPwd(),
+                    csrf:  csrf
+                }
+                _submit(data);
+            }
+        }).on('click', '.btn-register',function(e) {
+            location.href='/register.html'
         });
-    }).on('click', '.btn-register',function(e) {
-        location.href='/register.html'
-    });
+
+        function _submit(data) {
+            // 简单check
+            if(!data.username || !data.pwd){
+                alert('请输入用户名或密码');
+                return ;
+            }else if(data.username.pwd < 6){
+                alert('用户密码至少6位');
+                return ;
+            }
+            // 登录请求
+            $.ajax({
+                url: '/v1/auth',
+                method: 'post',
+                data: data,
+                dataType: 'json',
+                success: function(data){
+                    if (data.code === 200) {
+                        window.location.href = '/add-report.html';
+                    }else{
+                        alert(data.msg);
+                    }
+                }
+            });
+        }
+    })(jQuery);
+
     </script>
 </body>
 </html>

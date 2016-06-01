@@ -4,35 +4,17 @@
  * @type {[type]}
  */
 
-const session = require('koa-session-redis3');
 const render = require('../lib/render');
 
 const userDb = require('../models/user');
+const md5 = require('../lib/md5');
 
 /**
- * 认证认证接口
+ * /
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
  * @yield {[type]} [description]
  */
-// const auth = function*() {
-//     let ctx = this;
-//     let auth = yield coRequest({
-//         url: "http://dev.xiaodao360.cn/auth/login",
-//         method: "POST",
-//         header: config.oAuthHeader,
-//         form: {
-//             'client_key': 'key',
-//             'device_id': 'id',
-//             'os': 'android',
-//             'password': 'sdf',
-//             'platform': '3', // android=1，ios=2，h5=3  string  
-//             'username': '18565814531'
-//         }
-//     });
-
-//     let response = auth;
-//     let data = JSON.parse(result.body);
-
-// }
 
 
 const login = function*(req, res) {
@@ -41,24 +23,34 @@ const login = function*(req, res) {
     let uin = ctx.cookies.get('uin');
     let token = ctx.cookies.get('token');
 
-    let result = yield userDb.findOne({
-        userid: uin,
-        pwd: token
-    });
+    ctx.session.csrf = md5(Math.random(0, 1).toString()).slice(5, 15);
 
-    if (result) {
+    if (uin && token) {
+        let result = yield userDb.findOne({
+            userid: uin,
+            pwd: token
+        });
 
-        ctx.response.redirect('/list-report.html');
+        if (result) {
+            ctx.response.redirect('/list-report.html');
+        }
     } else {
-        ctx.body = yield render('user/login', {});
 
+        ctx.body = yield render('user/login', {
+            csrf: ctx.session.csrf
+        });
     }
+
 
 };
 
 const register = function*() {
+
     let ctx = this;
-    ctx.body = yield render('user/register', {});
+    ctx.session.csrf = md5(Math.random(0, 1).toString()).slice(5, 15);
+    ctx.body = yield render('user/register', {
+        csrf: ctx.session.csrf
+    });
 }
 
 

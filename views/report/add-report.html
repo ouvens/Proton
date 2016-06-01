@@ -82,13 +82,14 @@
                     <div class="am-hide-sm-only am-u-md-6">选填，一些其它需要注意的事项</div>
                 </div>
                 <div class="am-margin am-u-sm-centered">
-                  <button type="button" class="am-btn am-btn-primary am-btn-xs btn-save">提交保存</button>
-                  <button type="button" class="am-btn am-btn-primary am-btn-xs btn-report">上报管理</button>
+                  <button type="button" class="am-btn am-btn-primary am-btn btn-save">提交保存</button>
+                  <button type="button" class="am-btn am-btn-success am-btn btn-report">上报管理</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<div id="dataStore" data-csrf="{{ csrf }}"></div>
 {% endblock %}
 
 {% block script %}
@@ -104,7 +105,14 @@
 <script src="/amazeui/js/app.js"></script>
 <script>
     var form = document.amForm;
+
     $('#amForm').on('click','.btn-save', function(e) {
+
+        if(!form.name.value || !form.uri.value || !form.from.value || !form.type.value || !form.domain.value){
+            alert('请完善必要的填写信息');
+            return ;
+        }
+        
         $.ajax({
             url: '/v1/project',
             method: 'post',
@@ -114,11 +122,16 @@
                 from: form.from.value,
                 type: form.type.value,
                 domain: form.domain.value,
+                version: form.version.value,
                 desc: form.desc.value,
-                version: form.version.value
+                csrf: $('#dataStore').data('csrf')
             },
             success: function(data) {
-                console.log(data);
+                if (data.code === 200) {
+                    window.location.href = '/list-report.html?type=bad';
+                }else{
+                    alert(data.msg);
+                }
             }
         })
     }).on('click','.btn-report',function(e) {

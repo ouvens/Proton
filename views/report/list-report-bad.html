@@ -6,7 +6,7 @@
 <div class="admin-content-body">
     <div class="am-cf am-padding am-padding-bottom-0">
         <div class="am-fl am-cf">
-            <strong class="am-text-primary am-text-lg"><a href="/list-report.html">返回</a></strong> / <small>《{{ info.name }}》上报详细信息</small>
+            <strong class="am-text-primary am-text-lg"><a href="/list-report.html">返回</a></strong> / <small> 最新错误上报</small>
         </div>
         <table class="am-table am-table-striped am-table-hover table-main">
             <thead>
@@ -38,43 +38,15 @@
     <div class="am-g">
         <div class="am-u-sm-12 am-u-md-6">
             <div class="am-btn-toolbar">
-                <div class="am-btn-group am-btn-group-xs">
-                    <button type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
-                    <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
-                    <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
-                    <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+                <div class="am-btn-group am-btn-group-xs" data-id="{{ info.id }}">
+                    <button type="button" class="am-btn am-btn-default btn-add"><span class="am-icon-plus"></span> 新增上报</button>
+                    <button type="button" class="am-btn am-btn-default btn-chart"><span class="am-icon-line-chart"></span> 报表</button>
+                    <button type="button" class="am-btn am-btn-default btn-clear"><span class="am-icon-trash-o"></span> 清空上报</button>
+                    <button type="button" class="am-btn am-btn-default btn-refresh"><span class="am-icon-refresh"></span> 刷新</button>
                 </div>
             </div>
         </div>
-        <div class="am-u-sm-12 am-u-md-3">
-            <div class="am-form-group">
-                <select data-am-selected="{btnSize: 'sm'}" style="display: none;">
-                    <option value="option1">所有类别</option>
-                    <option value="option2">IT业界</option>
-                    <option value="option3">数码产品</option>
-                    <option value="option3">笔记本电脑</option>
-                    <option value="option3">平板电脑</option>
-                    <option value="option3">只能手机</option>
-                    <option value="option3">超极本</option>
-                </select>
-                <div class="am-selected am-dropdown " id="am-selected-vtf7k" data-am-dropdown="">
-                    <button type="button" class="am-selected-btn am-btn am-dropdown-toggle am-btn-sm am-btn-default"> <span class="am-selected-status am-fl">所有类别</span> <i class="am-selected-icon am-icon-caret-down"></i> </button>
-                    <div class="am-selected-content am-dropdown-content">
-                        <h2 class="am-selected-header"><span class="am-icon-chevron-left">返回</span></h2>
-                        <ul class="am-selected-list">
-                            <li class="am-checked" data-index="0" data-group="0" data-value="option1"> <span class="am-selected-text">所有类别</span> <i class="am-icon-check"></i></li>
-                            <li class="" data-index="1" data-group="0" data-value="option2"> <span class="am-selected-text">IT业界</span> <i class="am-icon-check"></i></li>
-                            <li class="" data-index="2" data-group="0" data-value="option3"> <span class="am-selected-text">数码产品</span> <i class="am-icon-check"></i></li>
-                            <li class="" data-index="3" data-group="0" data-value="option3"> <span class="am-selected-text">笔记本电脑</span> <i class="am-icon-check"></i></li>
-                            <li class="" data-index="4" data-group="0" data-value="option3"> <span class="am-selected-text">平板电脑</span> <i class="am-icon-check"></i></li>
-                            <li class="" data-index="5" data-group="0" data-value="option3"> <span class="am-selected-text">只能手机</span> <i class="am-icon-check"></i></li>
-                            <li class="" data-index="6" data-group="0" data-value="option3"> <span class="am-selected-text">超极本</span> <i class="am-icon-check"></i></li>
-                        </ul>
-                        <div class="am-selected-hint"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="am-u-sm-12 am-u-md-3">
             <div class="am-input-group am-input-group-sm">
                 <input type="text" class="am-form-field">
@@ -83,6 +55,7 @@
           </span>
             </div>
         </div>
+        
     </div>
     <div class="am-g">
         <div class="am-u-sm-12">
@@ -93,6 +66,7 @@
                             <th class="table-check">
                                 <input type="checkbox">
                             </th>
+                            <th class="table-msg">信息id</th>
                             <th class="table-id">用户id</th>
                             <th class="table-title">用户代理</th>
                             <th class="table-type">错误信息</th>
@@ -111,6 +85,7 @@
                             <td>
                                 <input type="checkbox">
                             </td>
+                            <td>{{ item.reportid }}</td>
                             <td>{{ item.uin }}</td>
                             <td>{{ item.userAgent }}</td>
                             <td title="{{ item.msg }}" class="td-msg">{{ item.msg }}</td>
@@ -121,10 +96,9 @@
                             <td>{{ item.time }}</td>
                             <td>
                                 <div class="am-btn-toolbar">
-                                    <div class="am-btn-group am-btn-group-xs">
-                                        <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>
-                                        <button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button>
-                                        <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>
+                                    <div class="am-btn-group am-btn-group-xs" data-reportid="{{ item.reportid }}">
+                                        <button class="am-btn am-btn-default am-btn-xs am-text-secondary btn-attention"><span class="am-icon-pencil-square-o"></span> 关注</button>
+                                        <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only btn-delete-report"><span class="am-icon-trash-o"></span> 删除</button>
                                     </div>
                                 </div>
                             </td>
@@ -151,6 +125,7 @@
         </div>
     </div>
 </div>
+<div id="dataStore" data-csrf="{{ csrf }}"></div>
 {% endblock %}
 
 {% block script %}
@@ -165,26 +140,84 @@
 <script src="/amazeui/js/amazeui.min.js"></script>
 <script src="/amazeui/js/app.js"></script>
 <script>
-var form = document.amForm;
-$('#amForm').on('click', '.btn-save', function(e) {
-    $.ajax({
-        url: '/v1/project',
-        method: 'post',
-        data: {
-            name: form.name.value,
-            uri: form.uri.value,
-            form: form.from.value,
-            type: form.type.value,
-            domain: form.domain.value,
-            desc: form.desc.value
-        },
-        success: function(data) {
-            console.log(data);
+(function($) {
 
+    $('body').on('click', '.btn-chart', function(e) {
+        e.preventDefault();
+        location.href = '/chart-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
+    }).on('click','.btn-add',function(e) {
+        e.preventDefault();
+        window.location.href = '/add-report.html';
+    }).on('click','.btn-refresh',function(e) {
+        e.preventDefault();
+        window.location.reload();
+    }).on('click','.btn-clear',function(e) {
+        e.preventDefault();
+        var id =  $(this).closest('.am-btn-group').data('id');
+        var csrf = $('#dataStore').data('csrf');
+        var self = this;
+
+        if(confirm('确定要清空该上报项之前的上报信息吗？')){
+            // 登录请求
+            $.ajax({
+                url: '/v1/report/' + id+'/' +csrf,
+                method: 'delete',
+                dataType: 'json',
+                success: function(data){
+                    if (data.code === 200) {
+                        $('tbody tr').remove();
+                    }else{
+                        alert(data.msg);
+                    }
+                }
+            });
         }
-    })
-});
+    }).on('click', '.btn-delete-report', function(e){
+        e.preventDefault();
+        var reportid =  $(this).closest('.am-btn-group').data('reportid');
+        var csrf = $('#dataStore').data('csrf');
+        var self = this;
+        if(confirm('确定要删除这条记录吗?')){
+            // 登录请求
+            $.ajax({
+                url: '/v1/one/report/' + reportid+'/' +csrf,
+                method: 'delete',
+                dataType: 'json',
+                success: function(data){
+                    if (data.code === 200) {
+                         $(self).closest('tr').fadeOut(1000);
+                    }else{
+                        alert(data.msg);
+                    }
+                }
+            });
+        }
+    }).on('click', '.btn-attention', function(e){
+        e.preventDefault();
 
+        var reportid =  $(this).closest('.am-btn-group').data('reportid');
+        var csrf = $('#dataStore').data('csrf');
+        var self = this;
+
+        // 登录请求
+        $.ajax({
+            url: '/v1/attention',
+            method: 'post',
+            dataType: 'json',
+            data: {
+                reportid: reportid,
+                csrf: csrf
+            },
+            success: function(data){
+                if (data.code === 200) {
+                    alert('关注成功');
+                }else{
+                    alert(data.msg);
+                }
+            }
+        });
+    });
+})(jQuery);
 
 </script>
 {% endblock %}

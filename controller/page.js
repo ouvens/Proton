@@ -5,7 +5,6 @@
  */
 
 const coRequest = require("co-request");
-const session = require('koa-session-redis3');
 const util = require('../lib/util');
 const render = require('../lib/render');
 const config = require('./common/config');
