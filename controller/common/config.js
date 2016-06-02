@@ -6,7 +6,7 @@ const coRequest = require("co-request");
 const APP_ID = 'wx80792921613f141d';
 const SECRET = 'c053bd3e1d2bb098f3ce46e2c4552698';
 
-const _oAuthHeader = {
+const oAuthHeader = {
 	Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6IjU3MjA3YzdmNzBlMWUifQ.eyJpc3MiOiJhcGkueGlhb2RhbzM2MC5jb20iLCJqdGkiOiI1NzIwN2M3ZjcwZTFlIiwiaWF0IjoxNDYxNzQ2ODE1LCJleHAiOjE0OTMyODI4MTUsIm1pZCI6OTU0ODMsInBsYXRmb3JtIjozLCJ0b2tlbl90eXBlIjoiQmVhcmVyIn0._DWpwiqvTbaYNhbGC4qQT_iIW63XR72OWY-iEPXNeSw'
 };
 
@@ -15,7 +15,7 @@ const _oAuthHeader = {
  * @param {[type]} ctx           [description]
  * @yield {[type]} [description]
  */
-const _getWxJsConfig = function*(ctx) {
+const getWxJsConfig = function*(ctx) {
 
 	let tokenRes, token, ticketRes, ticket, url, noncestr, appid, timestamp, signature, wxJsConfig;
 
@@ -69,7 +69,20 @@ const _getWxJsConfig = function*(ctx) {
 	return wxJsConfig;
 }
 
+/**
+ * 域名域名白名单设置
+ * @type {Array}
+ */
+const domains = [
+	'127.0.0.1',
+	'127.0.0.1:8086',
+	'www.xiaodao360.com',
+	'test.xiaodao360.cn',
+	'www.xiaodaowang.cn'
+];
+
 module.exports = {
-	oAuthHeader: _oAuthHeader,
-	getWxJsConfig: _getWxJsConfig
+	oAuthHeader: oAuthHeader,
+	getWxJsConfig: getWxJsConfig,
+	domains: domains
 }

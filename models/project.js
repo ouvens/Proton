@@ -13,6 +13,7 @@ const DB = require('./db.class');
  * 	form: string,			//上报平台
  * 	type: string,			//上报类型
  * 	token: string,			//避免重复提交标识
+ * 	domain: string,			//上报域名限制
  * }
  * @type {DB}
  */

@@ -35,7 +35,6 @@ router.get('/proton/my-report-bad.html', report.myReportBad);
  * api路由设置
  */
 router.get('/proton/v1/report', api.report);
-router.get('/proton/v1/device', api.addDevice);
 
 router.post('/proton/v1/register', api.register);
 router.post('/proton/v1/auth', api.auth);

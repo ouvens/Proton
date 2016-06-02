@@ -14,21 +14,21 @@
 
     $('body').on('click', '.btn-logout', function(e) {
         $.ajax({
-            url: '/v1/logout',
+            url: '/proton/v1/logout',
             method: 'post',
             data: {
 
             },
             success: function(data) {
                 if (data.code === 200) {
-                    window.location.href = '/login.html';
+                    window.location.href = 'login.html';
                 } else {
                     alert(data.msg);
                 }
             }
         })
     }).on('click', '.am-topbar-brand', function(e) {
-        window.location.href = '/list-report.html';
+        window.location.href = 'list-report.html';
     });
 
     var path = location.href;

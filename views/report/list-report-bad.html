@@ -71,9 +71,10 @@
                             <th class="table-title">用户代理</th>
                             <th class="table-type">错误信息</th>
                             <th class="table-from">设备信息</th>
-                            <th class="table-type">页面地址</th>
-                            <th class="table-type">文件来源</th>
-                            <th class="table-domain">版本</th>
+                            <th class="table-url">页面地址</th>
+                            <th class="table-source">文件来源</th>
+                            <th class="table-version">版本</th>
+                            <th class="table-position">行/列</th>
                             <th class="table-date">修改日期</th>
                             <th class="table-set">操作</th>
                         </tr>
@@ -93,6 +94,7 @@
                             <td>{{ item.from }}</td>
                             <td>{{ item.url }}</td>
                             <td>{{ item.version }}</td>
+                            <td>{{ item.row }}/{{ item.col }}</td>
                             <td>{{ item.time }}</td>
                             <td>
                                 <div class="am-btn-toolbar">
@@ -109,7 +111,7 @@
                 </table>
                 <div class="am-cf">
                     共 {{ data.length }} 条记录
-                    <div class="am-fr">
+                    <!-- <div class="am-fr">
                         <ul class="am-pagination">
                             <li class="am-disabled"><a href="list-report-bad.html?id={{ info.id }}">«</a></li>
                             <li class="am-active"><a href="list-report-bad.html?id={{ info.id }}&page=0">1</a></li>
@@ -119,7 +121,7 @@
                             <li><a href="list-report-bad.html?id={{ info.id }}&skip=100">5</a></li>
                             <li><a href="#">»</a></li>
                         </ul>
-                    </div>
+                    </div> -->
                 </div>
             </form>
         </div>

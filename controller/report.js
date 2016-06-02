@@ -112,7 +112,6 @@ const listReportBad = function*(req, res) {
         }, {
             limit: 40
         });
-        console.log(msgResult);
 
         // 拉取上报信息和用户信息
         let reportResult = yield projectDb.findOne({
@@ -325,7 +324,6 @@ const myReportBad = function*(req, res) {
 
         // 如果关注表的记录不存在则需要更新表内容
         if (newCollect.length !== collect.length) {
-            console.log('obj');
             userinfo.collect = newCollect;
             result = yield userDb.update({
                 userid: userid

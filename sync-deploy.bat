@@ -1,0 +1,1 @@
+rsync -rtzvlC --exclude .git --exclude .gitattributes --exclude .gitignore --exclude node_modules  ./ "root@192.168.1.250":"/home/proton/"

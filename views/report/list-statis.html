@@ -1,6 +1,6 @@
 {% extends '../layout.html' %} 
 
-{% block title %}错误上报页面管理{% endblock %} 
+{% block title %}添加检测页面项目{% endblock %} 
 
 {% block content %}
 <div class="admin-content-body">
@@ -101,12 +101,12 @@
 <!--[if (gte IE 9)|!(IE)]><!-->
 <script src="/amazeui/js/jquery.min.js"></script>
 <!--<![endif]-->
-</script>
 <script src="/amazeui/js/amazeui.min.js"></script>
 <script src="/amazeui/js/app.js"></script>
 <script>
 
 (function($) {
+
     $('body').on('click', '.btn-chart', function(e) {
         e.preventDefault();
         location.href = 'chart-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
@@ -118,11 +118,9 @@
         window.location.href = 'add-report.html';
     }).on('click', '.btn-delete-report', function(e){
         e.preventDefault();
-
         var id =  $(this).closest('.am-btn-group').data('id');
         var csrf = $('#dataStore').data('csrf');
         var self = this;
-
         if(confirm('确定要删除该记录吗，这将删除整个项目及项目所含的上报信息。')){
             // 登录请求
             $.ajax({
