@@ -100,7 +100,7 @@
                 _submit(data);
             }
         }).on('click','.btn-login', function(e) {
-            window.location.href= '/login.html';
+            window.location.href= 'login.html';
         })
 
         function _submit(data) {
@@ -117,13 +117,13 @@
             }
             // 注册请求
             $.ajax({
-                url: '/v1/register',
+                url: '/proton/v1/register',
                 method: 'post',
                 data: data,
                 dataType: 'json',
                 success: function(data){
                     if (data.code === 200) {
-                        window.location.href = '/add-report.html';
+                        window.location.href = 'add-report.html';
                     }else{
                         alert(data.msg);
                     }

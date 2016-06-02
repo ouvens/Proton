@@ -93,7 +93,7 @@
                 _submit(data);
             }
         }).on('click', '.btn-register',function(e) {
-            location.href='/register.html'
+            location.href='register.html'
         });
 
         function _submit(data) {
@@ -107,13 +107,13 @@
             }
             // 登录请求
             $.ajax({
-                url: '/v1/auth',
+                url: '/proton/v1/auth',
                 method: 'post',
                 data: data,
                 dataType: 'json',
                 success: function(data){
                     if (data.code === 200) {
-                        window.location.href = '/add-report.html';
+                        window.location.href = 'add-report.html';
                     }else{
                         alert(data.msg);
                     }

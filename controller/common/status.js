@@ -35,11 +35,11 @@ const status = function(code, result) {
 const authCheck = function(ctx) {
 	let uin = ctx.cookies.get('uin');
 	let token = ctx.cookies.get('token');
-	let login = '/login.html';
+	let login = 'login.html';
 	let isLogin = login.indexOf(ctx.url) >= 0;
 
 	if ((!uin || !token) && !isLogin) {
-		ctx.response.redirect('/login.html');
+		ctx.response.redirect('login.html');
 	}
 }
 

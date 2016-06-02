@@ -6,7 +6,7 @@
 <div class="admin-content-body">
     <div class="am-cf am-padding am-padding-bottom-0">
         <div class="am-fl am-cf">
-            <strong class="am-text-primary am-text-lg"><a href="/list-report.html">返回</a></strong> / <small> 最新错误上报</small>
+            <strong class="am-text-primary am-text-lg"><a href="list-report.html">返回</a></strong> / <small> 最新错误上报</small>
         </div>
         <table class="am-table am-table-striped am-table-hover table-main">
             <thead>
@@ -111,12 +111,12 @@
                     共 {{ data.length }} 条记录
                     <div class="am-fr">
                         <ul class="am-pagination">
-                            <li class="am-disabled"><a href="/list-report-bad.html?id={{ info.id }}">«</a></li>
-                            <li class="am-active"><a href="/list-report-bad.html?id={{ info.id }}&page=0">1</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=25">2</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=50">3</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=75">4</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=100">5</a></li>
+                            <li class="am-disabled"><a href="list-report-bad.html?id={{ info.id }}">«</a></li>
+                            <li class="am-active"><a href="list-report-bad.html?id={{ info.id }}&page=0">1</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=25">2</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=50">3</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=75">4</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=100">5</a></li>
                             <li><a href="#">»</a></li>
                         </ul>
                     </div>
@@ -144,10 +144,10 @@
 
     $('body').on('click', '.btn-chart', function(e) {
         e.preventDefault();
-        location.href = '/chart-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
+        location.href = 'chart-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
     }).on('click','.btn-add',function(e) {
         e.preventDefault();
-        window.location.href = '/add-report.html';
+        window.location.href = 'add-report.html';
     }).on('click','.btn-refresh',function(e) {
         e.preventDefault();
         window.location.reload();
@@ -160,7 +160,7 @@
         if(confirm('确定要清空该上报项之前的上报信息吗？')){
             // 登录请求
             $.ajax({
-                url: '/v1/report/' + id+'/' +csrf,
+                url: '/proton/v1/report/' + id+'/' +csrf,
                 method: 'delete',
                 dataType: 'json',
                 success: function(data){
@@ -180,7 +180,7 @@
         if(confirm('确定要删除这条记录吗?')){
             // 登录请求
             $.ajax({
-                url: '/v1/one/report/' + reportid+'/' +csrf,
+                url: '/proton/v1/one/report/' + reportid+'/' +csrf,
                 method: 'delete',
                 dataType: 'json',
                 success: function(data){
@@ -201,7 +201,7 @@
 
         // 登录请求
         $.ajax({
-            url: '/v1/attention',
+            url: '/proton/v1/attention',
             method: 'post',
             dataType: 'json',
             data: {

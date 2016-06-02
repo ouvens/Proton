@@ -32,7 +32,7 @@ const login = function*(req, res) {
         });
 
         if (result) {
-            ctx.response.redirect('/list-report.html');
+            ctx.response.redirect('list-report.html');
         }
     } else {
 

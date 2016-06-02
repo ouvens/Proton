@@ -6,7 +6,7 @@
 <div class="admin-content-body">
     <div class="am-cf am-padding am-padding-bottom-0">
         <div class="am-fl am-cf">
-            <strong class="am-text-primary am-text-lg"><a href="/list-report.html">返回</a></strong> / <small> 我关注的错误信息</small>
+            <strong class="am-text-primary am-text-lg"><a href="list-report.html">返回</a></strong> / <small> 我关注的错误信息</small>
         </div>
     </div>
     <hr>
@@ -75,12 +75,12 @@
                     共 {{ data.length }} 条记录
                     <div class="am-fr">
                         <ul class="am-pagination">
-                            <li class="am-disabled"><a href="/list-report-bad.html?id={{ info.id }}">«</a></li>
-                            <li class="am-active"><a href="/list-report-bad.html?id={{ info.id }}&page=0">1</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=25">2</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=50">3</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=75">4</a></li>
-                            <li><a href="/list-report-bad.html?id={{ info.id }}&skip=100">5</a></li>
+                            <li class="am-disabled"><a href="list-report-bad.html?id={{ info.id }}">«</a></li>
+                            <li class="am-active"><a href="list-report-bad.html?id={{ info.id }}&page=0">1</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=25">2</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=50">3</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=75">4</a></li>
+                            <li><a href="list-report-bad.html?id={{ info.id }}&skip=100">5</a></li>
                             <li><a href="#">»</a></li>
                         </ul>
                     </div>
@@ -114,7 +114,7 @@
         if(confirm('确定要删除该记录吗，这将删除整个项目及项目所含的上报信息。')){
             // 登录请求
             $.ajax({
-                url: '/v1/one/report/' + reportid+'/' +csrf,
+                url: '/proton/v1/one/report/' + reportid+'/' +csrf,
                 method: 'delete',
                 dataType: 'json',
                 success: function(data){
@@ -135,7 +135,7 @@
 
         // 登录请求
         $.ajax({
-            url: '/v1/attention/' + reportid +'/' + csrf,
+            url: '/proton/v1/attention/' + reportid +'/' + csrf,
             method: 'delete',
             dataType: 'json',
             success: function(data){

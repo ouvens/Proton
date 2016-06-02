@@ -48,7 +48,7 @@
 
                         {% for item in data %}
                         <tr title="{{ item.desc}}">
-                            <td><a href="/count-report-bad.html?id={{ item.id }}">{{ item.id }}</a></td>
+                            <td><a href="count-report-bad.html?id={{ item.id }}">{{ item.id }}</a></td>
                             <td>{{ item.name }}</td>
                             <td>{{ item.uri }}</td>
                             <td>{{ item.from }}</td>
@@ -109,13 +109,13 @@
 
     $('body').on('click', '.btn-chart', function(e) {
         e.preventDefault();
-        location.href = '/chart-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
+        location.href = 'chart-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
     }).on('click', '.btn-refresh', function(e) {
         e.preventDefault();
-        window.location.href = '/list-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
+        window.location.href = 'list-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
     }).on('click','.btn-add',function(e) {
         e.preventDefault();
-        window.location.href = '/add-report.html';
+        window.location.href = 'add-report.html';
     }).on('click', '.btn-delete-report', function(e){
         e.preventDefault();
         var id =  $(this).closest('.am-btn-group').data('id');
@@ -124,7 +124,7 @@
         if(confirm('确定要删除该记录吗，这将删除整个项目及项目所含的上报信息。')){
             // 登录请求
             $.ajax({
-                url: '/v1/project/' + id+'/' +csrf,
+                url: '/proton/v1/project/' + id+'/' +csrf,
                 method: 'delete',
                 dataType: 'json',
                 success: function(data){

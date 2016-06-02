@@ -114,7 +114,7 @@
         }
         
         $.ajax({
-            url: '/v1/project',
+            url: '/proton/v1/project',
             method: 'post',
             data:{
                 name: form.name.value,
@@ -128,14 +128,14 @@
             },
             success: function(data) {
                 if (data.code === 200) {
-                    window.location.href = '/list-report.html?type=bad';
+                    window.location.href = 'list-report.html?type=bad';
                 }else{
                     alert(data.msg);
                 }
             }
         })
     }).on('click','.btn-report',function(e) {
-        location.href = '/list-report.html';
+        location.href = 'list-report.html';
     })
 </script>
 {% endblock %}
