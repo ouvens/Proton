@@ -20,7 +20,6 @@ const report = function*() {
     let ctx = this;
     let reportArr = [];
 
-    let userAgent;
     let device;
 
 
@@ -37,21 +36,6 @@ const report = function*() {
         // 如果域名匹配不成功，则不进行上报
         ctx.body = '';
         return;
-    }
-
-    /**
-     * 判断userAgent内核
-     */
-    if (/trident/i.test(ctx.header['user-agent'])) {
-        userAgent = 'browser-ie';
-    } else if (/chrome/i.test(ctx.header['user-agent'])) {
-        userAgent = 'browser-chrome';
-    } else if (/safari/i.test(ctx.header['user-agent'])) {
-        userAgent = 'borwser-safari';
-    } else if (/firefox/i.test(ctx.header['user-agent'])) {
-        userAgent = 'borwser-firefox';
-    } else {
-        userAgent = 'browser-unknown';
     }
 
     /**
@@ -77,7 +61,7 @@ const report = function*() {
                 type: ctx.query.type || 0,
                 network: ctx.query.network || '未知网络类型',
                 device: ctx.query.device || device,
-                userAgent: ctx.query.userAgent || userAgent,
+                userAgent: ctx.header['user-agent'] || '未知浏览器',
                 uin: ctx.cookies.get('uin'),
 
                 // 可选上报信息, 详细字段件report表
@@ -104,7 +88,7 @@ const report = function*() {
             type: ctx.query.type || 0,
             network: ctx.query.network || '未知网络类型',
             device: ctx.query.device || device,
-            userAgent: ctx.query.userAgent || userAgent,
+            userAgent: ctx.header['user-agent'] || '未知浏览器',
             uin: ctx.cookies.get('uin'),
 
             // 可选上报信息, 详细字段件report表
