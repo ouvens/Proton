@@ -139,7 +139,7 @@ const reportStatis = function*() {
         // 如果项目id不存在则不上报
         ctx.body = '';
         return;
-    } else if (project.domain.indexOf(ctx.hostname) >= 0) {
+    } else if (project.domain.indexOf(ctx.hostname) < 0) {
         // 如果域名匹配不成功，则不进行上报
         ctx.body = '';
         return;

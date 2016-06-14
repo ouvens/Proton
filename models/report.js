@@ -25,6 +25,7 @@ const DB = require('./db.class');
  * }
  * @type {DB}
  */
+
 const report = new DB('report');
 
 module.exports = report;
