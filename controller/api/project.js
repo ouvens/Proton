@@ -34,7 +34,8 @@ const addProject = function*(req, res) {
 
 	/**
 	 * 项目识别码根据title和urimd5后识别
-	 * @type {[type]}
+ * @type {		[type]
+	}
 	 */
 	token = md5(data.name).slice(0, 10) + '-' + md5(data.name + data.uri).slice(11, -10) + '-' + md5(data.uri).slice(-10);
 

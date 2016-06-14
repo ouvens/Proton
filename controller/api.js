@@ -46,9 +46,11 @@ module.exports = {
     delProject: projectApi.delProject,
 
     //上报请求相关api
-    report: reportApi.report,
+    reportBad: reportApi.reportBad,
     delReport: reportApi.delReport,
     delOneReport: reportApi.delOneReport,
+
+    reportStatis: reportApi.reportStatis,
 
     // 测试命令行
     test: test

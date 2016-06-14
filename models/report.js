@@ -14,7 +14,7 @@ const DB = require('./db.class');
  * 	ip: string,			//用户ip
  * 	msg: string,		//上报错误信息
  * 	network: string,	//用户网络类型，2G,3G,4G或wifi
- * 	type: string,		//用户类型，0为自动栈调用信息，1为手动错误收集
+ * 	type: string,		//上报类型，bad为错误量上报，statis为统计量上报，speed为测速上报
  * 	row: number,		//上报行
  * 	col: number,		//上报列
  * 	level: number, 		//错误等级
