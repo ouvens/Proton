@@ -22,7 +22,6 @@ const reportBad = function*() {
 
     let device;
 
-
     //如果没找到项目则不处理 
     let project = yield projectDb.findOne({
         id: ctx.query.id
@@ -48,7 +47,6 @@ const reportBad = function*() {
     } else {
         device = 'pc';
     }
-
 
     // 处理信息提交到缓存数组
     if (ctx.query['url[' + 0 + ']']) {
@@ -107,7 +105,6 @@ const reportBad = function*() {
         });
     }
 
-
     /**
      * 插入report数据操作
      */
@@ -128,7 +125,7 @@ const reportStatis = function*() {
     let reportArr = [];
 
     let device;
-
+    let result;
 
     //如果没找到项目则不处理 
     let project = yield projectDb.findOne({
@@ -155,72 +152,62 @@ const reportStatis = function*() {
     } else {
         device = 'pc';
     }
-
-
     // 处理信息提交到缓存数组
-    if (ctx.query['url[' + 0 + ']']) {
-        for (let i = 0, record; record = ctx.query['url[' + i + ']']; i++) {
-            reportArr.push({
-                // APP和server上报必备上报信息, web端与badjs保持一致即可
-                id: ctx.query.id,
-                from: ctx.query.from || ctx.originalUrl,
-                msg: ctx.query['msg[' + i + ']'] || ctx.query['msg'],
-                type: ctx.query.type || 'statis',
-                network: ctx.query.network || '未知网络类型',
-                device: ctx.query.device || device,
-                userAgent: ctx.header['user-agent'] || '未知浏览器',
-                uin: ctx.cookies.get('uin'),
 
-                // 可选上报信息, 详细字段件report表
-                level: ctx.query['level[' + i + ']'] || ctx.query['level'],
-                url: ctx.query['target[' + i + ']'] || ctx.query['target'],
-                row: ctx.query['rowNum[' + i + ']'] || ctx.query['rowNum'],
-                col: ctx.query['colNum[' + i + ']'] || ctx.query['colNum'],
-                count: ctx.query.count || 1,
-                time: util.time.format('yy-mm-dd hh:ii:ss', ctx.query.t || +new Date()),
-                ext: ctx.query.ext || {},
+    let date = util.time.format('yy-mm-dd', +new Date());
 
-                // cookie或自动判断信息
-                reportid: (+new Date()).toString().slice(-8), //时间戳后8位作为唯一id
-                domain: ctx.host,
-                ip: ctx.ip
-            });
-        }
+    let statisData = {
+        // APP和server上报必备上报信息, web端与badjs保持一致即可
+        id: ctx.query.id,
+        from: ctx.query.from || ctx.originalUrl,
+        // msg: ctx.query['msg[' + i + ']'] || ctx.query['msg'],
+        type: ctx.query.type || 'statis',
+        network: ctx.query.network || '未知网络类型',
+        device: ctx.query.device || device,
+        userAgent: ctx.header['user-agent'] || '未知浏览器',
+        uin: ctx.cookies.get('uin'),
+
+        // cookie或自动判断信息
+        reportid: (+new Date()).toString().slice(-8), //时间戳后8位作为唯一id
+        domain: ctx.host,
+        ip: ctx.ip
+    };
+
+    // 查询今天的访问记录
+    let visitor = yield reportDb.findOne({
+        id: ctx.query.id,
+        ip: ctx.ip,
+        time: new RegExp(date),
+        userAgent: ctx.header['user-agent']
+    });
+
+    // 如果没有设置pv、uv，则定义空对象
+    if (!project['pv']) {
+        project['pv'] = {};
+        project['pv'][date] = {};
+    }
+
+    if (!project['uv']) {
+        project['uv'] = {};
+        project['uv'][date] = {};
+    }
+
+    if (visitor) {
+        // 如果当天有上报，则增加pv
+        project['pv'][date] = (project['pv'] && project['pv'][date] || 0) + 1;
+
+        // 如果没有上报，增加pv和uv
     } else {
-        reportArr.push({
-            // APP和server上报必备上报信息, web端与badjs保持一致即可
-            id: ctx.query.id,
-            from: ctx.query.from || ctx.originalUrl,
-            msg: ctx.query['msg'],
-            type: ctx.query.type || 'statis',
-            network: ctx.query.network || '未知网络类型',
-            device: ctx.query.device || device,
-            userAgent: ctx.header['user-agent'] || '未知浏览器',
-            uin: ctx.cookies.get('uin'),
 
-            // 可选上报信息, 详细字段件report表
-            level: ctx.query['level'],
-            url: ctx.query['target'],
-            row: ctx.query['rowNum'],
-            col: ctx.query['colNum'],
-            count: ctx.query.count || 1,
-            time: util.time.format('yy-mm-dd hh:ii:ss', ctx.query.t || +new Date()),
-            ext: ctx.query.ext || {},
+        project['pv'][date] = (project['pv'] && project['pv'][date] || 0) + 1;
+        project['uv'][date] = (project['uv'] && project['uv'][date] || 0) + 1;
 
-            // cookie或自动判断信息
-            reportid: (+new Date()).toString().slice(-8), //时间戳后8位作为唯一id
-            domain: ctx.host,
-            ip: ctx.ip
-        });
+        result = yield reportDb.insert(statisData);
     }
 
-
-    /**
-     * 插入report数据操作
-     */
-    for (let item of reportArr) {
-        let result = yield reportDb.insert(item);
-    }
+    result = yield projectDb.update({
+        id: ctx.query.id
+    }, project);
 
     ctx.body = ctx.body || '';
 };
