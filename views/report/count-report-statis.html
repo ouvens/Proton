@@ -1,0 +1,139 @@
+{% extends '../layout.html' %} 
+
+{% block title %}添加检测页面项目{% endblock %} 
+
+{% block content %}
+<div class="admin-content-body">
+    <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf">
+            <strong class="am-text-primary am-text-lg"><a href="list-report.html">返回</a></strong> / <small>《{{ info.name }}》上报详细信息</small>
+        </div>
+        <table class="am-table am-table-striped am-table-hover table-main">
+            <thead>
+                <tr>
+                    <th class="table-id">ID</th>
+                    <th class="table-title">上报名称</th>
+                    <th class="table-url">url或uri</th>
+                    <th class="table-from">上报来源</th>
+                    <th class="table-pv">累计pv</th>
+                    <th class="table-uv">累计uv</th>
+                    <th class="table-domain">域名限制</th>
+                    <th class="table-version">版本号</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr title="{{ info.desc}}">
+                    <td>{{ info.id }}</td>
+                    <td>{{ info.name }}</td>
+                    <td>{{ info.uri }}</td>
+                    <td>{{ info.from }}</td>
+                    <td>{{ info.pvCount }}</td>
+                    <td>{{ info.uvCount }}</td>
+                    <td>{{ info.domain }}</td>
+                    <td>{{ info.version }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <hr>
+    <div class="am-g">
+        <div class="am-u-sm-12 am-u-md-6">
+            <div class="am-btn-toolbar">
+                <div class="am-btn-group am-btn-group-xs" data-id="{{ info.id }}">
+                    <button type="button" class="am-btn am-btn-default btn-add"><span class="am-icon-plus"></span> 新增上报</button>
+                    <button type="button" class="am-btn am-btn-default btn-chart"><span class="am-icon-line-chart"></span> 报表</button>
+                    <button type="button" class="am-btn am-btn-default btn-clear"><span class="am-icon-trash-o"></span> 重新计数</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="am-u-sm-12 am-u-md-3">
+            <div class="am-input-group am-input-group-sm">
+                <input type="text" class="am-form-field">
+                <span class="am-input-group-btn">
+            <button class="am-btn am-btn-default" type="button">搜索</button>
+          </span>
+            </div>
+        </div>
+        
+    </div>
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <form class="am-form">
+                <table class="am-table am-table-striped am-table-hover table-main">
+                    <thead>
+                        <tr>
+                            <th class="table-id">日期</th>
+                            <th class="table-pv">pv</th>
+                            <th class="table-pv">uv</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in countData %}
+                        <tr>
+                            <td>{{ item.date }}</td>
+                            <td>{{ item.pv }}</td>
+                            <td>{{ item.uv }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="am-cf">
+                    共 {{ countData.length }} 条记录
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="dataStore" data-csrf="{{ csrf }}"></div>
+
+{% endblock %}
+
+{% block script %}
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/amazeui//js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="/amazeui/js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="/amazeui/js/amazeui.min.js"></script>
+<script src="/amazeui/js/app.js"></script>
+<script>
+var form = document.amForm;
+
+$('body').on('click', '.btn-chart', function(e) {
+    e.preventDefault();
+    window.location.href = 'chart-report-statis.html?id='+$(this).closest('.am-btn-group').data('id');
+}).on('click','.btn-add',function(e) {
+    e.preventDefault();
+    window.location.href = 'add-report.html';
+}).on('click','.btn-clear',function(e) {
+    e.preventDefault();
+    var id =  $(this).closest('.am-btn-group').data('id');
+    var csrf = $('#dataStore').data('csrf');
+    var self = this;
+
+    if(confirm('确定要清空之前的统计数据吗？')){
+        $.ajax({
+            url: '/proton/v1/statis/' + id+'/' +csrf,
+            method: 'delete',
+            dataType: 'json',
+            success: function(data){
+                if (data.code === 200) {
+                    $('tbody tr').remove();
+                }else{
+                    alert(data.msg);
+                }
+            }
+        });
+    }
+
+}).on('click', '.btn-refresh', function(e) {
+    window.location.href = 'list-report-bad.html?id=' + $(this).closest('.am-btn-group').data('id');
+});
+
+</script>
+{% endblock %}

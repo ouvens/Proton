@@ -40,7 +40,7 @@
         </div>
     </div>
 </div>
-<div id="dataStore" data-date="{{ dateArr }}" data-data="{{ dataArr }}"></div>
+<div id="dataStore" data-date="{{ dateArr }}" data-pv="{{ pvArr }}" data-uv="{{ uvArr }}"></div>
 {% endblock %}
 
 {% block script %}
@@ -58,18 +58,18 @@
 
 <script>
 var dateArr = $('#dataStore').data('date').split(',');
-var dataArr = $('#dataStore').data('data').split(',');
+var pvArr = $('#dataStore').data('pv').split(',');
+var uvArr = $('#dataStore').data('uv').split(',');
 var myChart = echarts.init(document.getElementById('reportChart'));
 var option = {
-
     title: {
-        text: '错误监控统计'
+        text: '访问量统计'
     },
     tooltip: {
         trigger: 'axis'
     },
     legend: {
-        data:['错误监控']
+        data:['访问量uv','访问量pv']
     },
     grid: {
         top: '7%',
@@ -93,15 +93,21 @@ var option = {
     },
     series: [
         {
-            name:'错误监控',
+            name:'访问量uv',
             type:'line',
             stack: '总量',
-            data: dataArr
+            data: uvArr
+        },
+        {
+            name:'访问量pv',
+            type:'line',
+            stack: '总量',
+            data: pvArr
         }
     ]
 };
 
-myChart.setOption(option);
+myChart.setOption(option,true);
 
 </script>
 {% endblock %}

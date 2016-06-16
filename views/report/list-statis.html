@@ -25,7 +25,6 @@
           </span>
             </div>
         </div>
-
     </div>
     <div class="am-g">
         <div class="am-u-sm-12">
@@ -37,7 +36,8 @@
                             <th class="table-title">上报名称</th>
                             <th class="table-type">url或uri</th>
                             <th class="table-from">上报来源</th>
-                            <th class="table-type">上报类型</th>
+                            <th class="table-pv">累计pv</th>
+                            <th class="table-uv">累计uv</th>
                             <th class="table-domain">域名限制</th>
                             <th class="table-version">版本号</th>
                             <th class="table-date">修改日期</th>
@@ -45,14 +45,14 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         {% for item in data %}
                         <tr title="{{ item.desc}}">
-                            <td><a href="count-report-bad.html?id={{ item.id }}">{{ item.id }}</a></td>
+                            <td><a href="count-report-statis.html?id={{ item.id }}">{{ item.id }}</a></td>
                             <td>{{ item.name }}</td>
                             <td>{{ item.uri }}</td>
                             <td>{{ item.from }}</td>
-                            <td>{{ item.type }}</td>
+                            <td>{{ item.pv }}</td>
+                            <td>{{ item.uv }}</td>
                             <td>{{ item.domain }}</td>
                             <td>{{ item.version }}</td>
                             <td>{{ item.time }}</td>

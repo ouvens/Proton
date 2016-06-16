@@ -108,7 +108,56 @@ const delProject = function*(req, res) {
 	ctx.body = res;
 }
 
+/**
+ * 清空计数统计
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
+const delStatis = function*(req, res) {
+	let ctx = this;
+	let project;
+	let result;
+
+	try {
+		// 如果id不为空，请csrf检验成功
+		if (ctx.params.id && ctx.params.csrf === ctx.session.csrf) {
+			result = yield reportDb.remove({
+				id: ctx.params.id
+			});
+
+			project = yield projectDb.findOne({
+				id: ctx.params.id
+			});
+
+			project['pv'] = null;
+			project['uv'] = null;
+
+			result = yield projectDb.update({
+				id: ctx.params.id
+			}, project)
+			res = {
+				code: 200
+			};
+		} else {
+			res = {
+				code: 500,
+				msg: '服务器错误'
+			}
+		}
+	} catch (e) {
+		console.log(e);
+		res = {
+			code: 500,
+			msg: '服务器错误'
+		}
+	}
+	ctx.body = res;
+
+}
+
 module.exports = {
 	addProject: addProject,
-	delProject: delProject
+	delProject: delProject,
+	delStatis: delStatis
 }

@@ -30,6 +30,8 @@ router.get('/proton/list-report-bad.html', report.listReportBad);
 router.get('/proton/count-report-bad.html', report.countReportBad);
 router.get('/proton/chart-report-bad.html', report.chartReportBad);
 router.get('/proton/my-report-bad.html', report.myReportBad);
+router.get('/proton/count-report-statis.html', report.countReportStatis);
+router.get('/proton/chart-report-statis.html', report.chartReportStatis);
 
 /**
  * api路由设置
@@ -49,6 +51,7 @@ router.post('/proton/v1/attention', api.addAttention);
 router.delete('/proton/v1/attention/:reportid/:csrf', api.cancelAttention);
 router.delete('/proton/v1/project/:id/:csrf', api.delProject);
 router.delete('/proton/v1/report/:id/:csrf', api.delReport);
+router.delete('/proton/v1/statis/:id/:csrf', api.delStatis);
 
 router.delete('/proton/v1/one/report/:reportid/:csrf', api.delOneReport);
 

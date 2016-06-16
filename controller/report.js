@@ -70,18 +70,32 @@ const listReport = function*(req, res) {
     }
 
     // 拉取项目信息和用户信息
-    let result = yield projectDb.find({
+    let project = yield projectDb.find({
         userid: userid,
         type: type
     });
-    console.log(result);
 
     let userinfo = yield userDb.findOne({
         userid: userid
     });
 
+    for (let item of project) {
+        if (item['uv'] && item['pv']) {
+            let pv = 0;
+            let uv = 0;
+            for (let date in item['uv']) {
+                uv += item['uv'][date];
+            }
+            for (let date in item['pv']) {
+                pv += item['pv'][date];
+            }
+            item['uv'] = uv;
+            item['pv'] = pv;
+        }
+    }
+
     res = yield render(viewName, {
-        data: result,
+        data: project,
         userinfo: userinfo,
         csrf: ctx.session.csrf
     });
@@ -149,6 +163,86 @@ const listReportBad = function*(req, res) {
 }
 
 /**
+ * 统计量统计页面
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
+const countReportStatis = function*(req, res) {
+    status.authCheck(this);
+
+    let ctx = this;
+    let reportid = ctx.query.id;
+    let userid = ctx.cookies.get('uin');
+
+    let condition = {};
+    let statisArr = [];
+
+    ctx.session.csrf = md5(Math.random(0, 1).toString()).slice(5, 15);
+
+    if (reportid) {
+        let msgResult = yield reportDb.distinct('msg', {
+            id: reportid
+        });
+        let count;
+
+        // 拉取上报信息和用户信息
+        let reportResult = yield projectDb.findOne({
+            id: reportid
+        });
+
+        let userinfo = yield userDb.findOne({
+            userid: userid
+        });
+
+        if (reportResult['uv'] && reportResult['pv']) {
+            let pv = 0;
+            let uv = 0;
+            let empty = {};
+            for (let date in reportResult['uv']) {
+                uv += reportResult['uv'][date];
+                pv += reportResult['pv'][date];
+
+                empty = {
+                    date: date,
+                    pv: reportResult['pv'][date],
+                    uv: reportResult['uv'][date]
+                }
+
+                statisArr.push(empty);
+            }
+
+            reportResult['uvCount'] = uv;
+            reportResult['pvCount'] = pv;
+        }
+
+        console.log(statisArr);
+
+        if (reportResult) {
+            res = yield render('report/count-report-statis', {
+                userinfo: userinfo,
+                info: reportResult, // 设置全局信息，复用第一个元素的信息
+                countData: statisArr,
+                csrf: ctx.session.csrf
+            });
+        } else {
+            res = {
+                code: 404,
+                msg: '没有数据'
+            };
+        }
+
+    } else {
+        res = {
+            code: 404,
+            msg: '没有数据'
+        };
+    }
+
+    ctx.body = res;
+}
+
+/**
  * 错误量统计页面
  * @param {[type]} req           [description]
  * @param {[type]} res           [description]
@@ -195,7 +289,6 @@ const countReportBad = function*(req, res) {
 
         if (reportResult) {
             res = yield render('report/count-report-bad', {
-                data: msgResult,
                 userinfo: userinfo,
                 info: reportResult, // 设置全局信息，复用第一个元素的信息
                 countData: dataArr,
@@ -208,6 +301,76 @@ const countReportBad = function*(req, res) {
             };
         }
 
+    } else {
+        res = {
+            code: 404,
+            msg: '没有数据'
+        };
+    }
+
+    ctx.body = res;
+}
+
+/**
+ * 统计量报表页面
+ * @param {[type]} req           [description]
+ * @param {[type]} res           [description]
+ * @yield {[type]} [description]
+ */
+const chartReportStatis = function*(req, res) {
+    status.authCheck(this);
+
+    let ctx = this;
+
+    let projectid = ctx.query.id;
+    let day = parseInt(ctx.query.day, 10) || 8;
+    let userid = ctx.cookies.get('uin');
+    let now = +new Date();
+    let timeMatch = 'yy-mm-dd';
+    let timeRang = 1000 * 3600 * 24;
+
+    let count, date;
+    let pvArr = [],
+        uvArr = [],
+        dateArr = [];
+    /**
+     * 添加csrf token
+     * @type {[type]}
+     */
+
+    if (projectid) {
+        /**
+         * 逐个查询每天的上报量生成报表
+         */
+        let reportResult = yield projectDb.findOne({
+            id: projectid
+        });
+
+        for (let i = 0; i < day; i++) {
+            date = util.time.format(timeMatch, now - timeRang * i)
+            dateArr.unshift(date);
+            pvArr.unshift(reportResult['pv'] && reportResult['pv'][date] || 0);
+            uvArr.unshift(reportResult['uv'] && reportResult['uv'][date] || 0);
+        }
+
+        let userinfo = yield userDb.findOne({
+            userid: userid
+        });
+
+        if (reportResult) {
+            res = yield render('report/chart-report-statis', {
+                info: reportResult, // 设置全局信息，复用第一个元素的信息
+                userinfo: userinfo,
+                dateArr: dateArr,
+                pvArr: pvArr,
+                uvArr: uvArr
+            });
+        } else {
+            res = {
+                code: 404,
+                msg: '没有数据'
+            };
+        }
     } else {
         res = {
             code: 404,
@@ -356,5 +519,7 @@ module.exports = {
     listReportBad: listReportBad,
     countReportBad: countReportBad,
     chartReportBad: chartReportBad,
+    countReportStatis: countReportStatis,
+    chartReportStatis: chartReportStatis,
     myReportBad: myReportBad
 }

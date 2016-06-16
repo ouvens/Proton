@@ -24,7 +24,8 @@ const reportBad = function*() {
 
     //如果没找到项目则不处理 
     let project = yield projectDb.findOne({
-        id: ctx.query.id
+        id: ctx.query.id,
+        type: 'bad'
     });
 
     if (!project) {
@@ -129,7 +130,8 @@ const reportStatis = function*() {
 
     //如果没找到项目则不处理 
     let project = yield projectDb.findOne({
-        id: ctx.query.id
+        id: ctx.query.id,
+        type: 'statis'
     });
 
     if (!project) {
@@ -177,30 +179,31 @@ const reportStatis = function*() {
     let visitor = yield reportDb.findOne({
         id: ctx.query.id,
         ip: ctx.ip,
-        time: new RegExp(date),
+        type: 'statis',
         userAgent: ctx.header['user-agent']
     });
 
     // 如果没有设置pv、uv，则定义空对象
     if (!project['pv']) {
         project['pv'] = {};
-        project['pv'][date] = {};
+        project['pv'][date] = 0;
     }
 
     if (!project['uv']) {
         project['uv'] = {};
-        project['uv'][date] = {};
+        project['uv'][date] = 0;
     }
 
+    console.log(visitor);
     if (visitor) {
         // 如果当天有上报，则增加pv
-        project['pv'][date] = (project['pv'] && project['pv'][date] || 0) + 1;
+        project['pv'][date] = project['pv'][date] + 1;
 
         // 如果没有上报，增加pv和uv
     } else {
 
-        project['pv'][date] = (project['pv'] && project['pv'][date] || 0) + 1;
-        project['uv'][date] = (project['uv'] && project['uv'][date] || 0) + 1;
+        project['pv'][date] = project['pv'][date] + 1;
+        project['uv'][date] = project['uv'][date] + 1;
 
         result = yield reportDb.insert(statisData);
     }

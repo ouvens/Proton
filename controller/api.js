@@ -51,6 +51,7 @@ module.exports = {
     delOneReport: reportApi.delOneReport,
 
     reportStatis: reportApi.reportStatis,
+    delStatis: projectApi.delStatis,
 
     // 测试命令行
     test: test
