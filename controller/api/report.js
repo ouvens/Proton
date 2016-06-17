@@ -172,25 +172,31 @@ const reportStatis = function*() {
         // cookie或自动判断信息
         reportid: (+new Date()).toString().slice(-8), //时间戳后8位作为唯一id
         domain: ctx.host,
-        ip: ctx.ip
+        ip: ctx.ip,
+        time: util.time.format('yy-mm-dd hh:ii:ss', +new Date())
     };
+
 
     // 查询今天的访问记录
     let visitor = yield reportDb.findOne({
         id: ctx.query.id,
         ip: ctx.ip,
         type: 'statis',
+        time: new RegExp(date),
         userAgent: ctx.header['user-agent']
     });
-
-    // 如果没有设置pv、uv，则定义空对象
+    // 如果没有设置pv或当天uv，则定义空对象
     if (!project['pv']) {
         project['pv'] = {};
+        project['pv'][date] = 0;
+    } else if (!project['pv'][date]) {
         project['pv'][date] = 0;
     }
 
     if (!project['uv']) {
         project['uv'] = {};
+        project['uv'][date] = 0;
+    } else if (!project['uv'][date]) {
         project['uv'][date] = 0;
     }
 
